@@ -10,7 +10,7 @@ function commandeMoteurRotation () {
     }
 }
 bluetooth.onBluetoothConnected(function () {
-    basic.showIcon(IconNames.Yes)
+    basic.showIcon(IconNames.Heart)
 })
 bluetooth.onBluetoothDisconnected(function () {
     reset()
