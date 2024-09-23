@@ -19,12 +19,6 @@ bluetooth.onBluetoothDisconnected(function () {
 function commandeMoteurTreuil () {
     if (tournerHoraire == 1) {
         servos.P2.run(puissanceTreuil)
-    } else {
-        if (tournerAntiHoraire == 1) {
-            servos.P2.run(0 - puissanceTreuil)
-        } else {
-            servos.P2.stop()
-        }
     }
 }
 bluetooth.onUartDataReceived(serial.delimiters(Delimiters.SemiColon), function () {
