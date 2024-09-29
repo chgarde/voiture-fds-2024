@@ -19,6 +19,7 @@ bluetooth.onBluetoothDisconnected(function () {
 function commandeMoteurTreuil () {
     if (tournerHoraire == 1) {
         servos.P2.run(puissanceTreuil)
+        servos.P1.run(puissanceRotation)
     }
 }
 bluetooth.onUartDataReceived(serial.delimiters(Delimiters.SemiColon), function () {
@@ -27,25 +28,21 @@ bluetooth.onUartDataReceived(serial.delimiters(Delimiters.SemiColon), function (
 function traitemementMessage () {
     message = bluetooth.uartReadUntil(serial.delimiters(Delimiters.SemiColon))
     if (message == "down_haut") {
-        basic.showString("T")
         moteur = 1
         tournerHoraire = 1
     } else if (message == "up_haut") {
         tournerHoraire = 0
     } else if (message == "down_bas") {
-        basic.showString("T")
         moteur = 1
         tournerAntiHoraire = 1
     } else if (message == "up_bas") {
         tournerAntiHoraire = 0
     } else if (message == "down_droite") {
-        basic.showString("R")
         moteur = 0
         tournerHoraire = 1
     } else if (message == "up_droite") {
         tournerHoraire = 0
     } else if (message == "down_gauche") {
-        basic.showString("R")
         moteur = 0
         tournerAntiHoraire = 1
     } else if (message == "up_gauche") {
@@ -56,49 +53,8 @@ function reset () {
     moteur = 0
     tournerHoraire = 0
     tournerAntiHoraire = 0
-    puissanceTreuil = 30
-    puissanceRotation = 20
-}
-function afficherDirection () {
-    if (tournerHoraire == 1) {
-        if (moteur == 0) {
-            basic.showLeds(`
-                . . . # .
-                . # # # #
-                # . . # .
-                # . . . .
-                . # # # .
-                `)
-        } else if (moteur == 1) {
-            basic.showLeds(`
-                . . # . .
-                . # # # .
-                # . # . #
-                . . # . .
-                . . # . .
-                `)
-        }
-    } else {
-        if (tournerAntiHoraire == 1) {
-            if (moteur == 0) {
-                basic.showLeds(`
-                    . # . . .
-                    # # # # .
-                    . # . . #
-                    . . . . #
-                    . # # # .
-                    `)
-            } else if (moteur == 1) {
-                basic.showLeds(`
-                    . . # . .
-                    . . # . .
-                    # . # . #
-                    . # # # .
-                    . . # . .
-                    `)
-            }
-        }
-    }
+    puissanceTreuil = 100
+    puissanceRotation = 100
 }
 let moteur = 0
 let message = ""
@@ -110,7 +66,6 @@ bluetooth.startUartService()
 basic.showIcon(IconNames.Square)
 reset()
 basic.forever(function () {
-    afficherDirection()
     if (moteur == 0) {
         commandeMoteurRotation()
     } else {
