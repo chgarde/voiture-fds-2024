@@ -1,14 +1,3 @@
-function commandeMoteurRotation () {
-    if (tournerHoraire == 1) {
-        servos.P0.run(puissanceRotation)
-    } else {
-        if (tournerAntiHoraire == 1) {
-            servos.P0.run(0 - puissanceRotation)
-        } else {
-            servos.P0.stop()
-        }
-    }
-}
 bluetooth.onBluetoothConnected(function () {
     basic.showIcon(IconNames.Heart)
 })
@@ -16,15 +5,16 @@ bluetooth.onBluetoothDisconnected(function () {
     reset()
     basic.showIcon(IconNames.No)
 })
-function commandeMoteurTreuil () {
-    if (tournerHoraire == 1) {
-        servos.P2.run(puissanceTreuil)
-        servos.P1.run(puissanceRotation)
-    }
+function stopMoteurDirection () {
+    servos.P0.stop()
+    servos.P1.stop()
 }
 bluetooth.onUartDataReceived(serial.delimiters(Delimiters.SemiColon), function () {
     traitemementMessage()
 })
+function commandeMoteurGauche () {
+    servos.P0.run(puissanceRotation)
+}
 function traitemementMessage () {
     message = bluetooth.uartReadUntil(serial.delimiters(Delimiters.SemiColon))
     if (message == "down_haut") {
@@ -49,26 +39,62 @@ function traitemementMessage () {
         tournerAntiHoraire = 0
     }
 }
-function reset () {
-    moteur = 0
-    tournerHoraire = 0
-    tournerAntiHoraire = 0
-    puissanceTreuil = 100
-    puissanceRotation = 100
+function traitemementMessage2 () {
+    message = bluetooth.uartReadUntil(serial.delimiters(Delimiters.SemiColon))
+    if (message == "down_haut") {
+        commandeMoteurAvancer()
+    } else if (message == "up_haut") {
+        stopMoteur()
+    } else if (message == "down_bas") {
+        commandeMoteurReculer()
+    } else if (message == "up_bas") {
+        stopMoteur()
+    } else if (message == "down_droite") {
+        commandeMoteurDroite()
+    } else if (message == "up_droite") {
+        stopMoteurDirection()
+    } else if (message == "down_gauche") {
+        commandeMoteurGauche()
+    } else if (message == "up_gauche") {
+        stopMoteurDirection()
+    }
 }
+function commandeMoteurDroite () {
+    servos.P0.run(puissanceRotation)
+}
+function stopMoteur () {
+    servos.P1.stop()
+    servos.P2.stop()
+}
+function commandeMoteurReculer () {
+    if (tournerHoraire == 1) {
+        servos.P2.run(0 - puissanceMoteur)
+        servos.P1.run(0 - puissanceMoteur)
+    }
+}
+function reset () {
+    puissanceMoteur = 100
+    puissanceRotation = 50
+}
+function commandeMoteurAvancer () {
+    if (tournerHoraire == 1) {
+        servos.P2.run(puissanceMoteur)
+        servos.P1.run(puissanceMoteur)
+    }
+}
+let puissanceMoteur = 0
+let tournerAntiHoraire = 0
+let tournerHoraire = 0
 let moteur = 0
 let message = ""
-let puissanceTreuil = 0
-let tournerAntiHoraire = 0
 let puissanceRotation = 0
-let tournerHoraire = 0
 bluetooth.startUartService()
 basic.showIcon(IconNames.Square)
 reset()
 basic.forever(function () {
     if (moteur == 0) {
-        commandeMoteurRotation()
+        commandeMoteurDroite()
     } else {
-        commandeMoteurTreuil()
+        commandeMoteurAvancer()
     }
 })
