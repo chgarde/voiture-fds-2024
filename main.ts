@@ -10,7 +10,7 @@ function stopMoteurDirection () {
     servos.P1.stop()
 }
 bluetooth.onUartDataReceived(serial.delimiters(Delimiters.SemiColon), function () {
-	
+    traitemementMessage2()
 })
 function commandeMoteurGauche () {
     servos.P0.run(puissanceRotation)
@@ -36,7 +36,7 @@ function traitemementMessage2 () {
     }
 }
 function commandeMoteurDroite () {
-    servos.P0.run(puissanceRotation)
+    servos.P0.run(0 - puissanceRotation)
 }
 function stopMoteur () {
     servos.P1.stop()
