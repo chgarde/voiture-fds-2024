@@ -60,6 +60,3 @@ let puissanceRotation = 0
 bluetooth.startUartService()
 basic.showIcon(IconNames.Square)
 reset()
-basic.forever(function () {
-	
-})
