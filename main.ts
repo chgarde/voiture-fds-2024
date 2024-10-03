@@ -44,7 +44,7 @@ function stopMoteur () {
 }
 function commandeMoteurReculer () {
     servos.P2.run(0 - puissanceMoteur)
-    servos.P1.run(0 - puissanceMoteur)
+    servos.P1.run(puissanceMoteur)
 }
 function reset () {
     puissanceMoteur = 100
@@ -52,7 +52,7 @@ function reset () {
 }
 function commandeMoteurAvancer () {
     servos.P2.run(puissanceMoteur)
-    servos.P1.run(puissanceMoteur)
+    servos.P1.run(0 - puissanceMoteur)
 }
 let puissanceMoteur = 0
 let message = ""
